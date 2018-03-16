@@ -10,6 +10,7 @@ def initiate_requests(queue):
     item = queue.get()
     # print(current_thread())
     print(requests.get(item).status_code)
+    print(queue.qsize())
     gc.collect()
     # print(get_process_memory() / 1024)
 
@@ -17,24 +18,19 @@ def initiate_requests(queue):
 def run_with_join_threads():
     start_time = time()
     queue = get_queue()
-    while queue.qsize() > 5:
+    while queue.qsize() > 25:
         thread_list = []
-        for i in range(1, 15):
+        for i in range(1, 50):
             worker = Thread(target=initiate_requests, args=(queue,))
             thread_list.append(worker)
-
-        print('Memory before start is {0}'.format(get_process_memory()/1024))
 
         for worker in thread_list:
             worker.start()
 
-        print('Memory after start is {0}'.format(get_process_memory() / 1024))
-
         for worker in thread_list:
             worker.join()
 
-        print('Memory after join is {0}'.format(get_process_memory() / 1024))
-        # print('workers joined again...')
+            # print('workers joined again...')
     completed_time = time() - start_time
     print('The completion time is {0}'.format(completed_time))
 

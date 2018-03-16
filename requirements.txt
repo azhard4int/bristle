@@ -1,3 +1,4 @@
 requests
 memory_profiler
 redis
+aiohttp
